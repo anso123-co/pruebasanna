@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: bot-citas
+    env: node
+    plan: starter
+    buildCommand: "npm ci"
+    startCommand: "node index.js"
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      # Panel (front) permitido para CORS
+      - key: PANEL_ORIGIN
+        value: https://tu-panel.onrender.com
+
+      # OpenAI / Twilio / Calendar
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GOOGLE_CALENDAR_ID
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_PHONE_NUMBER
+        sync: false
+      - key: ALERT_PHONE_NUMBER
+        sync: false
+
+      # Opción 1: ruta a JSON en disco (lo subes luego a /var/data/sa.json)
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        value: /var/data/sa.json
+      # Opción 2 (alternativa): pega el JSON codificado en base64 y lo auto-guardamos en /var/data/sa.json
+      # - key: GOOGLE_APPLICATION_CREDENTIALS_JSON_B64
+      #   sync: false
+
+    disk:
+      name: wa-auth
+      mountPath: /var/data
+      sizeGB: 1
+
+    healthCheckPath: /health/session
